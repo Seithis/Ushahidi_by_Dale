@@ -1,0 +1,94 @@
+From 7541b4cedad1f5fa4663303660ceae6b883f5d9c Mon Sep 17 00:00:00 2001
+From: Seithis <DouglasD17@mymail.macewan.ca>
+Date: Tue, 29 Nov 2011 11:09:59 -0500
+Subject: [PATCH] Changed views/admin/reports and default/views/report_listing
+ to check for a tag(!revise!) and print out whether reports
+ have a revision request in them. The plugin I made searches
+ through comments when you're viewing a report and separates
+ out any of them with that tag, or atleast the part of them
+ after the tag.
+
+---
+ application/views/admin/reports.php         |   18 ++++++++++++++++++
+ themes/default/views/reports_listing.php    |   19 ++++++++++++++++++-
+ 2 files changed, 37 insertions(+), 1 deletions(-)
+
+diff --git a/application/views/admin/reports.php b/application/views/admin/reports.php
+index 6f99cbc..b2fa877 100644
+--- a/application/views/admin/reports.php
++++ b/application/views/admin/reports.php
+@@ -197,17 +197,35 @@
+ 											<input name="incident_id[]" id="incident" value="<?php echo $incident_id; ?>" type="checkbox" class="check-box"/>
+ 										</td>
+ 										<td class="col-2">
++										
+ 											<div class="post">
+ 												<h4>
+ 													<a href="<?php echo url::site() . 'admin/reports/edit/' . $incident_id; ?>" class="more">
+ 														<?php echo $incident_title; ?>
+ 													</a>
+ 												</h4>
++												
+ 												<p><?php echo $incident_description; ?>... 
+ 													<a href="<?php echo url::base() . 'admin/reports/edit/' . $incident_id; ?>" class="more">
+ 														<?php echo Kohana::lang('ui_main.more');?>
+ 													</a>
+ 												</p>
++												<?php   
++								//EDITED. Checks reports for a revision request, and prints out a line letting you know.
++								$db=Database::instance();
++                                $query='SELECT * FROM comment'. ' WHERE incident_id = '.(int)$incident_id.';';
++								$comments=$db->query($query);
++								if(count($comments)>0){  
++	                                foreach($comments as $comment){
++	                                    $value=stristr($comment->comment_description,"!revise!");
++	                                    if($value!=false){
++	                                        ?><h5><?php echo "Revision requested";?></h5><?php
++	                                        break;
++	                                    }
++	                                }
++	                            }
++	                            //EDIT DONE
++								?>
+ 											</div>
+ 											<ul class="info">
+ 												<li class="none-separator"><?php echo Kohana::lang('ui_main.location');?>: 
+
+diff --git a/themes/default/views/reports_listing.php b/themes/default/views/reports_listing.php
+index 5dac17d..c36159a 100644
+--- a/themes/default/views/reports_listing.php
++++ b/themes/default/views/reports_listing.php
+@@ -124,6 +124,23 @@
+ 							</a>
+ 							<a href="<?php echo url::site(); ?>reports/view/<?php echo $incident_id; ?>#discussion" class="r_comments">
+ 								<?php echo $comment_count; ?></a> 
++								
++								<?php   
++								//EDITED. Checks reports for a revision request, and prints out a line letting you know.
++								$db=Database::instance();
++                                $query='SELECT * FROM comment'. ' WHERE incident_id = '.(int)$incident_id.';';
++								$comments=$db->query($query);
++								if(count($comments)>0){  
++	                                foreach($comments as $comment){
++	                                    $value=stristr($comment->comment_description,"!revise!");
++	                                    if($value!=false){
++	                                        ?><h6><?php echo "Revision requested";?></h6><h3><?php
++	                                        break;
++	                                    }
++	                                }
++	                            }
++	                            //EDIT DONE
++								?>
+ 								<?php echo $incident_verified; ?>
+ 							</h3>
+ 						<p class="r_date r-3 bottom-cap"><?php echo $incident_date; ?></p>
+@@ -164,4 +181,4 @@
+ 			</table>
+ 		</div>
+ 		<!-- /Bottom paginator -->
+-	        
+\ No newline at end of file
++	        
+-- 
+1.7.6
+

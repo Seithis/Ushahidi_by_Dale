@@ -1,0 +1,6 @@
+For the second sprint, I made a plugin that, while viewing reports, separates out the part
+of any comment after a !revise! inside the description. Also, I directly altered some
+files, specifically application/views/admin/reports.php and 
+themes/default/views/reports_listing.php  which are the ones that create the list of all
+reports in both regular and admin areas, and caused them to print out a statement saying
+that a revision has been requested on a report, without having to go into it.
