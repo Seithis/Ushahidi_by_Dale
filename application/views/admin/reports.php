@@ -197,17 +197,35 @@
 											<input name="incident_id[]" id="incident" value="<?php echo $incident_id; ?>" type="checkbox" class="check-box"/>
 										</td>
 										<td class="col-2">
+										
 											<div class="post">
 												<h4>
 													<a href="<?php echo url::site() . 'admin/reports/edit/' . $incident_id; ?>" class="more">
 														<?php echo $incident_title; ?>
 													</a>
 												</h4>
+												
 												<p><?php echo $incident_description; ?>... 
 													<a href="<?php echo url::base() . 'admin/reports/edit/' . $incident_id; ?>" class="more">
 														<?php echo Kohana::lang('ui_main.more');?>
 													</a>
 												</p>
+												<?php   
+								//EDITED. Checks reports for a revision request, and prints out a line letting you know.
+								$db=Database::instance();
+                                $query='SELECT * FROM comment'. ' WHERE incident_id = '.(int)$incident_id.';';
+								$comments=$db->query($query);
+								if(count($comments)>0){  
+	                                foreach($comments as $comment){
+	                                    $value=stristr($comment->comment_description,"!revise!");
+	                                    if($value!=false){
+	                                        ?><h5><?php echo "Revision requested";?></h5><?php
+	                                        break;
+	                                    }
+	                                }
+	                            }
+	                            //EDIT DONE
+								?>
 											</div>
 											<ul class="info">
 												<li class="none-separator"><?php echo Kohana::lang('ui_main.location');?>: 

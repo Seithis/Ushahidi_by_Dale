@@ -124,6 +124,23 @@
 							</a>
 							<a href="<?php echo url::site(); ?>reports/view/<?php echo $incident_id; ?>#discussion" class="r_comments">
 								<?php echo $comment_count; ?></a> 
+								
+								<?php   
+								//EDITED. Checks reports for a revision request, and prints out a line letting you know.
+								$db=Database::instance();
+                                $query='SELECT * FROM comment'. ' WHERE incident_id = '.(int)$incident_id.';';
+								$comments=$db->query($query);
+								if(count($comments)>0){  
+	                                foreach($comments as $comment){
+	                                    $value=stristr($comment->comment_description,"!revise!");
+	                                    if($value!=false){
+	                                        ?><h6><?php echo "Revision requested";?></h6><h3><?php
+	                                        break;
+	                                    }
+	                                }
+	                            }
+	                            //EDIT DONE
+								?>
 								<?php echo $incident_verified; ?>
 							</h3>
 						<p class="r_date r-3 bottom-cap"><?php echo $incident_date; ?></p>

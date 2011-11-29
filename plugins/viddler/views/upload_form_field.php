@@ -16,7 +16,7 @@
 	}
 </script>
 
-<div id="divVideo" class="report_row">
+<div id="divPhoto" class="report_row">
 	<h4><?php echo Kohana::lang('ui_main.upload_video'); ?></h4>
 	<input type="file" name="incident_video_file" id="incident_video_file" value="" class="text long2" onchange="checkFilesize('incident_video_file')" />
 	<div style="clear:both;"><?php echo Kohana::lang('ui_main.maximum_filesize'); ?>: <?php echo number_format($maximum_filesize/1024); ?>kb</div>
